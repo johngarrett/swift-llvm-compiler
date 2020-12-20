@@ -1,4 +1,4 @@
-enum Token {
+enum Token: Equatable {
     case leftParen, rightParen, def, extern, comma, semicolon, `if`, then, `else`
     case identifier(String)
     case number(Double)

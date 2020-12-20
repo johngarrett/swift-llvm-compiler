@@ -1,5 +1,7 @@
-print("hello world!")
-
-let toks = Lexer(on: "def foo(n) (n * 100.35);").lex()
-
-print(toks)
+let toks = Lexer(on: """
+    extern sqrt(n);
+    def foo(n) (n * sqrt(n * 200) + 57 * n % 2);
+    """
+).lex()
+let file = try! Parser(tokens: toks).parseFile()
+print(file)
