@@ -40,7 +40,7 @@ class Lexer {
     let input: String
     var index: String.Index
     
-    init(input: String) {
+    init(on input: String) {
         self.input = input
         self.index = input.startIndex
     }
@@ -82,40 +82,15 @@ class Lexer {
             return nil
         }
         
-        let singleTokMapping: [Character: Token] = [
-            ",": .comma,
-            "(": .leftParen,
-            ")": .rightParen,
-            ";": .semicolon,
-            "+": .operator(.plus),
-            "-": .operator(.minus),
-            "/": .operator(.divide),
-            "*": .operator(.times),
-            "%": .operator(.mod),
-            "=": .operator(.equals)
-        ]
-        
-        if let tok = singleTokMapping[char] {
+        if let opr = BinaryOperator(char) {
+            advanceIndex()
+            return .operator(opr)
+        } else if let tok = Token(char) {
             advanceIndex()
             return tok
         }
-        
+
         // else, we need to parse an identifier
-        if char.isAlphaNumeric {
-            var str = readIdentifierOrNumber()
-            if let dblValue = Double(str) {
-                return .number(dblValue)
-            }
-            
-            switch str {
-                case "def": return .def
-                case "extern": return .extern
-                case "if": return .if
-                case "then": return .then
-                case "else": return .else
-                default: return .identifier(str)
-            }
-        }
-        return nil
+        return char.isAlphaNumeric ? Token(readIdentifierOrNumber()): nil
     }
 }
